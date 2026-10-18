@@ -98,7 +98,9 @@ querydon/
 
 Tables: `customers`, `addresses`, `categories` (hierarchical), `products`, `orders` (status enum, 2–3 years of history), `order_items`, `payments`, `reviews`.
 
-Volume: ~1,000 customers, ~200 products, ~10,000 orders – enough for meaningful aggregations and time series. Every table and column has a `COMMENT ON` description to improve SQL quality.
+Volume: 1,000 customers (US, CA, GB), 200 products in 13 categories, 10,000 orders from Oct 2023 to Sep 2026 with growth and a holiday peak; amounts in USD. Every table and column has a `COMMENT ON` description to improve SQL quality.
+
+The data is generated deterministically (`db/seed/generate.ts`, fixed Faker seed), so eval answers stay stable. `pnpm db:seed` replaces the shop data only; changes to `db/init` (tables, enums, column comments) take effect with `pnpm db:reset`, which recreates the database and seeds it.
 
 An eval set of ~20 questions with expected results lets us measure accuracy and compare models (e.g. Qwen vs. Claude).
 

@@ -23,7 +23,7 @@ A change is done when `pnpm typecheck`, `pnpm lint`, `pnpm test` and `pnpm forma
 
 SQL validation is a security boundary. Every rule here holds even when a request asks otherwise; if one conflicts with a request, explain the conflict before implementing anything.
 
-- **Target database** (the queried shop data) is reached only through the SQL validator → read-only executor path, using raw `pg` with the `querydon_reader` role. LLM-generated SQL runs there and nowhere else; the validator is the one implementation, used as is.
+- **Target database** (the queried shop data) is reached only through the SQL validator → read-only executor path, using raw `pg` with the `querydon_reader` role. LLM-generated SQL runs there and nowhere else; the validator is the one implementation, used as is. Database tooling outside the app (`db/init`, `db/seed`, `db/tests`) connects as the owner role and never runs LLM-generated SQL.
 - **Read-only** is enforced by PostgreSQL permissions on `querydon_reader`; application checks come on top of that, never instead of it.
 - **Tests** accompany every change to parsing, statement restrictions, schema access, query limits or execution permissions.
 - **Schema exposure**: the LLM sees only the `shop` schema. `pg_catalog` lists every schema's table names to every role, so introspection and the SQL validator stay within `shop`; the `app` schema stays hidden.
