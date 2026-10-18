@@ -8,6 +8,8 @@ services:
             POSTGRES_DB: ${POSTGRES_DB:-shop}
             POSTGRES_USER: ${POSTGRES_USER:-querydon}
             POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-querydon}
+            # Read by db/init/02_roles.sh
+            QUERYDON_READER_PASSWORD: ${QUERYDON_READER_PASSWORD:-querydon-reader}
         ports:
             # 5433 on the host: 5432 is used by other postgres containers
             - "${POSTGRES_PORT:-5433}:5432"

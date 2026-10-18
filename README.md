@@ -85,7 +85,8 @@ querydon/
 ├─ packages/
 │  └─ shared/                  # shared types / Zod schemas (API DTOs)
 ├─ db/
-│  ├─ init/01_schema.sql       # shop schema, comments, read-only role
+│  ├─ init/01_schema.sql       # shop schema with COMMENTs
+│  ├─ init/02_roles.sh         # querydon_reader role, app schema
 │  └─ seed/seed.ts             # Faker-based deterministic seed
 ├─ eval/                       # test questions + expected results
 ├─ docker-compose.yml
