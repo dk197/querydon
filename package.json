@@ -19,7 +19,8 @@
 		"db:down": "docker compose down",
 		"db:reset": "docker compose down -v && docker compose up -d --wait",
 		"db:logs": "docker compose logs -f postgres",
-		"db:psql": "docker compose exec postgres psql -U querydon -d shop"
+		"db:psql": "docker compose exec postgres psql -U querydon -d shop",
+		"db:test": "docker compose exec -T postgres sh -s < db/tests/reader-permissions.sh"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",

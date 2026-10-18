@@ -63,7 +63,7 @@ Default model: `qwen2.5-14b-instruct` – a good balance between SQL generation 
 
 ## Security
 
-- Dedicated PostgreSQL role `querydon_reader` with `SELECT` privileges only
+- Dedicated PostgreSQL role `querydon_reader`: `SELECT` on schema `shop` only, sessions read-only with a 10 s statement timeout; functions that write or change session state from inside a `SELECT` (`set_config`, large objects, `pg_notify`) are revoked
 - AST-based validation: single read-only statement, no DDL/DML
 - Timeouts and row limits on every query
 - Only a truncated result is sent to the LLM
@@ -140,5 +140,6 @@ Start LM Studio, load a Qwen model and enable the local server (default `http://
 ## Testing
 
 - Unit tests for the SQL validator (`DROP`, `UPDATE`, multiple statements, `SELECT …; DELETE …` must be rejected)
+- `pnpm db:test` – checks against the running container what `querydon_reader` may and may not do
 - `pnpm eval` – runs all eval questions against `/query` and reports accuracy
 - Manual: ask "Top 5 products by revenue in 2025", follow up with "and by category?", export as CSV/XLSX

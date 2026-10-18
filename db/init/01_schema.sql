@@ -49,7 +49,9 @@ CREATE TABLE addresses (
 	postal_code text NOT NULL,
 	city text NOT NULL,
 	country_code char(2) NOT NULL CHECK (country_code ~ '^[A-Z]{2}$'),
-	is_default boolean NOT NULL DEFAULT false
+	is_default boolean NOT NULL DEFAULT false,
+	-- Target of orders' composite foreign key: an order ships only to its customer's address
+	UNIQUE (id, customer_id)
 );
 COMMENT ON TABLE addresses IS 'Postal addresses of customers; a customer can have several, one of them marked as default.';
 COMMENT ON COLUMN addresses.id IS 'Address ID.';
@@ -114,7 +116,7 @@ CREATE INDEX products_category_id_idx ON products (category_id);
 CREATE TABLE orders (
 	id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	customer_id bigint NOT NULL REFERENCES customers (id),
-	shipping_address_id bigint NOT NULL REFERENCES addresses (id),
+	shipping_address_id bigint NOT NULL,
 	status order_status NOT NULL DEFAULT 'pending',
 	ordered_at timestamptz NOT NULL DEFAULT now(),
 	shipped_at timestamptz,
@@ -122,12 +124,13 @@ CREATE TABLE orders (
 	shipping_cost numeric(10, 2) NOT NULL DEFAULT 0 CHECK (shipping_cost >= 0),
 	total_amount numeric(12, 2) NOT NULL CHECK (total_amount >= 0),
 	CHECK (shipped_at IS NULL OR shipped_at >= ordered_at),
-	CHECK (delivered_at IS NULL OR shipped_at IS NOT NULL AND delivered_at >= shipped_at)
+	CHECK (delivered_at IS NULL OR shipped_at IS NOT NULL AND delivered_at >= shipped_at),
+	FOREIGN KEY (shipping_address_id, customer_id) REFERENCES addresses (id, customer_id)
 );
 COMMENT ON TABLE orders IS 'Customer orders (one row per checkout). Line items are in order_items, payments in payments.';
 COMMENT ON COLUMN orders.id IS 'Order ID.';
 COMMENT ON COLUMN orders.customer_id IS 'Customer who placed the order (customers.id).';
-COMMENT ON COLUMN orders.shipping_address_id IS 'Address the order was shipped to (addresses.id).';
+COMMENT ON COLUMN orders.shipping_address_id IS 'Address the order was shipped to (addresses.id); always one of the ordering customer''s addresses.';
 COMMENT ON COLUMN orders.status IS 'Current order status; see type order_status. Revenue analyses usually exclude cancelled and returned orders.';
 COMMENT ON COLUMN orders.ordered_at IS 'When the order was placed; use this for time-based revenue analyses.';
 COMMENT ON COLUMN orders.shipped_at IS 'When the order left the warehouse; NULL if not shipped yet.';
@@ -164,7 +167,8 @@ CREATE TABLE payments (
 	method payment_method NOT NULL,
 	status payment_status NOT NULL DEFAULT 'pending',
 	amount numeric(12, 2) NOT NULL CHECK (amount >= 0),
-	paid_at timestamptz
+	paid_at timestamptz,
+	CHECK ((paid_at IS NOT NULL) = (status IN ('completed', 'refunded')))
 );
 COMMENT ON TABLE payments IS 'Payment attempts for orders. An order can have several (e.g. a failed attempt followed by a completed one).';
 COMMENT ON COLUMN payments.id IS 'Payment ID.';
@@ -172,7 +176,7 @@ COMMENT ON COLUMN payments.order_id IS 'Order being paid (orders.id).';
 COMMENT ON COLUMN payments.method IS 'Payment method; see type payment_method.';
 COMMENT ON COLUMN payments.status IS 'Payment state; see type payment_status.';
 COMMENT ON COLUMN payments.amount IS 'Amount in EUR.';
-COMMENT ON COLUMN payments.paid_at IS 'When the payment completed; NULL unless status is completed or refunded.';
+COMMENT ON COLUMN payments.paid_at IS 'When the payment completed; set exactly when status is completed or refunded, NULL otherwise.';
 
 CREATE INDEX payments_order_id_idx ON payments (order_id);
 

@@ -26,7 +26,7 @@ SQL validation is a security boundary. Every rule here holds even when a request
 - **Target database** (the queried shop data) is reached only through the SQL validator → read-only executor path, using raw `pg` with the `querydon_reader` role. LLM-generated SQL runs there and nowhere else; the validator is the one implementation, used as is.
 - **Read-only** is enforced by PostgreSQL permissions on `querydon_reader`; application checks come on top of that, never instead of it.
 - **Tests** accompany every change to parsing, statement restrictions, schema access, query limits or execution permissions.
-- **Schema exposure**: the LLM sees only the schema visible to `querydon_reader`; the `app` schema stays hidden.
+- **Schema exposure**: the LLM sees only the `shop` schema. `pg_catalog` lists every schema's table names to every role, so introspection and the SQL validator stay within `shop`; the `app` schema stays hidden.
 - **Errors**: Postgres error messages for a failed query go back to the LLM for self-correction. Stack traces, connection details and credentials stay in server logs; API clients get sanitized errors.
 - **Untrusted data**: database content and query results enter LLM prompts only as delimited data blocks, never inside system instructions.
 
