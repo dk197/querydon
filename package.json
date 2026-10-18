@@ -14,7 +14,12 @@
 		"lint": "eslint .",
 		"lint:fix": "eslint . --fix",
 		"format": "prettier --write .",
-		"format:check": "prettier --check ."
+		"format:check": "prettier --check .",
+		"db:up": "docker compose up -d --wait",
+		"db:down": "docker compose down",
+		"db:reset": "docker compose down -v && docker compose up -d --wait",
+		"db:logs": "docker compose logs -f postgres",
+		"db:psql": "docker compose exec postgres psql -U querydon -d shop"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
