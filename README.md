@@ -45,8 +45,8 @@ LLM_BASE_URL=http://localhost:1234/v1 # LM Studio
 LLM_MODEL=qwen2.5-14b-instruct
 LLM_API_KEY=lm-studio
 
-TARGET_DATABASE_URL=postgres://querydon_reader:***@localhost:5432/shop
-APP_DATABASE_URL=postgres://querydon:***@localhost:5432/shop
+TARGET_DATABASE_URL=postgres://querydon_reader:***@localhost:5433/shop
+APP_DATABASE_URL=postgres://querydon:***@localhost:5433/shop
 ```
 
 Default model: `qwen2.5-14b-instruct` – a good balance between SQL generation and fluent natural-language answers. Coder models (e.g. Qwen2.5-Coder) may produce better SQL but weaker prose; the eval set (see below) is used to compare them.
