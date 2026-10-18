@@ -1,0 +1,30 @@
+{
+	"name": "@querydon/backend",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"build": "nest build",
+		"dev": "nest start --watch --preserveWatchOutput",
+		"start": "node dist/main.js",
+		"typecheck": "tsc --noEmit",
+		"test": "vitest run",
+		"test:watch": "vitest"
+	},
+	"dependencies": {
+		"@nestjs/common": "^12.1.3",
+		"@nestjs/core": "^12.1.3",
+		"@nestjs/platform-express": "^12.1.3",
+		"@querydon/shared": "workspace:*",
+		"reflect-metadata": "^0.2.2",
+		"rxjs": "^7.8.2"
+	},
+	"devDependencies": {
+		"@nestjs/cli": "^12.0.8",
+		"@nestjs/schematics": "^12.0.7",
+		"@nestjs/testing": "^12.1.3",
+		"@types/express": "^5.0.6",
+		"@types/node": "^24.19.2",
+		"vitest": "^5.0.5"
+	}
+}

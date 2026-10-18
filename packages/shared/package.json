@@ -1,0 +1,21 @@
+{
+	"name": "@querydon/shared",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"exports": {
+		".": {
+			"source": "./src/index.ts",
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"scripts": {
+		"build": "tsc -p tsconfig.build.json",
+		"dev": "tsc -p tsconfig.build.json --watch --preserveWatchOutput",
+		"typecheck": "tsc --noEmit"
+	},
+	"dependencies": {
+		"zod": "^4.6.7"
+	}
+}
