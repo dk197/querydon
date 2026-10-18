@@ -3,7 +3,7 @@
 -- The COMMENTs are part of the product: schema introspection hands them to the LLM.
 
 CREATE SCHEMA shop;
-COMMENT ON SCHEMA shop IS 'Online shop data: customers, catalog, orders, payments and reviews. All amounts are in EUR.';
+COMMENT ON SCHEMA shop IS 'Online shop data: customers, catalog, orders, payments and reviews. All amounts are in USD.';
 
 SET search_path TO shop;
 
@@ -59,7 +59,7 @@ COMMENT ON COLUMN addresses.customer_id IS 'Customer the address belongs to (cus
 COMMENT ON COLUMN addresses.street IS 'Street and house number.';
 COMMENT ON COLUMN addresses.postal_code IS 'Postal code.';
 COMMENT ON COLUMN addresses.city IS 'City name.';
-COMMENT ON COLUMN addresses.country_code IS 'ISO 3166-1 alpha-2 country code, e.g. DE, AT, CH.';
+COMMENT ON COLUMN addresses.country_code IS 'ISO 3166-1 alpha-2 country code: US, CA or GB.';
 COMMENT ON COLUMN addresses.is_default IS 'True for the customer''s default shipping address.';
 
 CREATE UNIQUE INDEX addresses_one_default_per_customer ON addresses (customer_id) WHERE is_default;
@@ -101,8 +101,8 @@ COMMENT ON COLUMN products.category_id IS 'Category of the product (categories.i
 COMMENT ON COLUMN products.sku IS 'Stock keeping unit, unique article number.';
 COMMENT ON COLUMN products.name IS 'Product name.';
 COMMENT ON COLUMN products.description IS 'Marketing description; may be NULL.';
-COMMENT ON COLUMN products.price IS 'Current gross selling price per unit in EUR. Historic order prices are in order_items.unit_price.';
-COMMENT ON COLUMN products.cost IS 'Purchase cost per unit in EUR; margin = price - cost.';
+COMMENT ON COLUMN products.price IS 'Current gross selling price per unit in USD. Historic order prices are in order_items.unit_price.';
+COMMENT ON COLUMN products.cost IS 'Purchase cost per unit in USD; margin = price - cost.';
 COMMENT ON COLUMN products.stock_quantity IS 'Units currently in stock.';
 COMMENT ON COLUMN products.is_active IS 'False when the product is discontinued and no longer sold.';
 COMMENT ON COLUMN products.created_at IS 'When the product was added to the catalog.';
@@ -135,8 +135,8 @@ COMMENT ON COLUMN orders.status IS 'Current order status; see type order_status.
 COMMENT ON COLUMN orders.ordered_at IS 'When the order was placed; use this for time-based revenue analyses.';
 COMMENT ON COLUMN orders.shipped_at IS 'When the order left the warehouse; NULL if not shipped yet.';
 COMMENT ON COLUMN orders.delivered_at IS 'When the order was delivered; NULL if not delivered yet.';
-COMMENT ON COLUMN orders.shipping_cost IS 'Shipping fee charged to the customer in EUR.';
-COMMENT ON COLUMN orders.total_amount IS 'Order total in EUR: sum of order_items line totals (quantity * unit_price - discount) plus shipping_cost.';
+COMMENT ON COLUMN orders.shipping_cost IS 'Shipping fee charged to the customer in USD.';
+COMMENT ON COLUMN orders.total_amount IS 'Order total in USD: sum of order_items line totals (quantity * unit_price - discount) plus shipping_cost.';
 
 CREATE INDEX orders_customer_id_idx ON orders (customer_id);
 CREATE INDEX orders_ordered_at_idx ON orders (ordered_at);
@@ -156,8 +156,8 @@ COMMENT ON COLUMN order_items.id IS 'Order item ID.';
 COMMENT ON COLUMN order_items.order_id IS 'Order the line belongs to (orders.id).';
 COMMENT ON COLUMN order_items.product_id IS 'Product ordered (products.id).';
 COMMENT ON COLUMN order_items.quantity IS 'Number of units ordered.';
-COMMENT ON COLUMN order_items.unit_price IS 'Price per unit in EUR at the time of the order (may differ from the current products.price).';
-COMMENT ON COLUMN order_items.discount IS 'Absolute discount in EUR on the whole line, not per unit.';
+COMMENT ON COLUMN order_items.unit_price IS 'Price per unit in USD at the time of the order (may differ from the current products.price).';
+COMMENT ON COLUMN order_items.discount IS 'Absolute discount in USD on the whole line, not per unit.';
 
 CREATE INDEX order_items_product_id_idx ON order_items (product_id);
 
@@ -175,7 +175,7 @@ COMMENT ON COLUMN payments.id IS 'Payment ID.';
 COMMENT ON COLUMN payments.order_id IS 'Order being paid (orders.id).';
 COMMENT ON COLUMN payments.method IS 'Payment method; see type payment_method.';
 COMMENT ON COLUMN payments.status IS 'Payment state; see type payment_status.';
-COMMENT ON COLUMN payments.amount IS 'Amount in EUR.';
+COMMENT ON COLUMN payments.amount IS 'Amount in USD.';
 COMMENT ON COLUMN payments.paid_at IS 'When the payment completed; set exactly when status is completed or refunded, NULL otherwise.';
 
 CREATE INDEX payments_order_id_idx ON payments (order_id);
